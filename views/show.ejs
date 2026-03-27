@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Post</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Post Details</h1>
+
+        <div class="post">
+            <div class="post-header">
+                <p class="meta-info">Post ID: <%= post.id %></p>
+                <h3 class="user">@<%= post.username %></h3>
+            </div>
+            
+            <p class="content"><%= post.content %></p>
+            
+            <div class="post-actions">
+                <a href="/posts" class="btn btn-cancel">← Back to Feed</a>
+                <a href="/posts/<%= post.id %>/edit" class="btn btn-edit">Edit Post</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
