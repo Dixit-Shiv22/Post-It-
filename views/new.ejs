@@ -11,11 +11,26 @@
         <h1>Create a New Post</h1>
 
         <div class="post form-card">
-            <form method="POST" action="/posts">
+            <form method="POST" action="/posts" id="new-post-form">
+
+                <!-- Avatar picker -->
+                <div class="avatar-picker-section">
+                    <div class="avatar-picker-preview" id="picker-preview">
+                        <span class="avatar-initials" id="picker-initial">?</span>
+                    </div>
+                    <div class="avatar-picker-info">
+                        <span class="meta-info">Profile Picture</span>
+                        <label for="pfp-upload" class="btn btn-outline-sm">
+                            Choose Photo
+                        </label>
+                        <input type="file" id="pfp-upload" accept="image/*" style="display:none;">
+                        <button type="button" class="btn btn-ghost-sm" id="remove-pfp" style="display:none;">Remove</button>
+                    </div>
+                </div>
                 
                 <div class="form-group">
                     <label for="username" class="meta-info">Username</label>
-                    <input type="text" id="username" class="edit-input" placeholder="e.g., manas_k" name="username" required>
+                    <input type="text" id="username" class="edit-input" placeholder="e.g., manas_k" name="username" required autocomplete="off">
                 </div>
                 
                 <div class="form-group">
@@ -31,5 +46,60 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const fileInput  = document.getElementById('pfp-upload');
+        const preview    = document.getElementById('picker-preview');
+        const initial    = document.getElementById('picker-initial');
+        const removeBtn  = document.getElementById('remove-pfp');
+        const usernameEl = document.getElementById('username');
+
+        let pendingImage = null;
+
+        // Update initial letter as user types username
+        usernameEl.addEventListener('input', () => {
+            const v = usernameEl.value.trim();
+            initial.textContent = v ? v.charAt(0).toUpperCase() : '?';
+        });
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                pendingImage = e.target.result;
+                applyPreview(pendingImage);
+                removeBtn.style.display = 'inline-flex';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        removeBtn.addEventListener('click', () => {
+            pendingImage = null;
+            clearPreview();
+            removeBtn.style.display = 'none';
+            fileInput.value = '';
+        });
+
+        function applyPreview(src) {
+            preview.style.backgroundImage = `url(${src})`;
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
+            initial.style.display = 'none';
+        }
+
+        function clearPreview() {
+            preview.style.backgroundImage = '';
+            initial.style.display = '';
+        }
+
+        // On submit: save image to localStorage keyed by username
+        document.getElementById('new-post-form').addEventListener('submit', () => {
+            const uname = usernameEl.value.trim();
+            if (uname && pendingImage) {
+                localStorage.setItem('pfp:' + uname, pendingImage);
+            }
+        });
+    </script>
 </body>
 </html>

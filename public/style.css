@@ -63,8 +63,6 @@ body {
   background-color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
-
-  /* Ambient gradient mesh */
   background-image:
     radial-gradient(ellipse 70% 55% at 15%  8%,  rgba(232,52,74,.08)  0%, transparent 65%),
     radial-gradient(ellipse 55% 45% at 85% 85%,  rgba(0,201,167,.06)  0%, transparent 60%),
@@ -72,7 +70,6 @@ body {
   background-attachment: fixed;
 }
 
-/* Animated glow blob */
 body::before {
   content: '';
   position: fixed;
@@ -85,7 +82,6 @@ body::before {
   z-index: 0;
 }
 
-/* Film-grain noise */
 body::after {
   content: '';
   position: fixed; inset: 0;
@@ -96,9 +92,9 @@ body::after {
 }
 
 @keyframes blob {
-  0%   { transform: translate(0,     0  ) scale(1);    }
-  50%  { transform: translate(-70px, 55px) scale(1.12);}
-  100% { transform: translate( 40px,-35px) scale(.92); }
+  0%   { transform: translate(0,      0  ) scale(1);    }
+  50%  { transform: translate(-70px,  55px) scale(1.12);}
+  100% { transform: translate( 40px, -35px) scale(.92); }
 }
 
 /* ── CONTAINER ─────────────────────────────────────────────────── */
@@ -124,7 +120,6 @@ h1 {
   animation: fadeUp .6s var(--ease) both;
 }
 
-/* Animated underline */
 h1::after {
   content: '';
   display: block;
@@ -174,13 +169,12 @@ h1::after {
   overflow: hidden;
   box-shadow: var(--shadow);
   transition:
-    transform      var(--t) var(--ease),
-    box-shadow     var(--t) var(--ease),
-    border-color   var(--t) var(--ease);
+    transform    var(--t) var(--ease),
+    box-shadow   var(--t) var(--ease),
+    border-color var(--t) var(--ease);
   animation: cardIn .55s var(--ease) both;
 }
 
-/* Staggered entrance for feed cards */
 .feed .post:nth-child(1) { animation-delay: .05s; }
 .feed .post:nth-child(2) { animation-delay: .11s; }
 .feed .post:nth-child(3) { animation-delay: .17s; }
@@ -188,7 +182,6 @@ h1::after {
 .feed .post:nth-child(5) { animation-delay: .29s; }
 .feed .post:nth-child(6) { animation-delay: .35s; }
 
-/* Shimmer top-border */
 .post::before {
   content: '';
   position: absolute;
@@ -201,7 +194,6 @@ h1::after {
   animation: shimmer 4s linear infinite;
 }
 
-/* Left accent bar */
 .post::after {
   content: '';
   position: absolute;
@@ -211,9 +203,7 @@ h1::after {
   background: linear-gradient(180deg, var(--red), var(--teal));
   opacity: 0;
   transform: scaleY(.35);
-  transition:
-    opacity   var(--t) var(--ease),
-    transform var(--t) var(--ease);
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease);
 }
 
 .post:hover {
@@ -224,14 +214,64 @@ h1::after {
 .post:hover::before { opacity: 1; }
 .post:hover::after  { opacity: 1; transform: scaleY(1); }
 
-/* ── POST HEADER ───────────────────────────────────────────────── */
+/* ── POST TOP ROW (avatar + username) ──────────────────────────── */
+.post-top {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  margin-bottom: .85rem;
+}
+
+/* ── AVATAR ────────────────────────────────────────────────────── */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--red), var(--amber));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px var(--red-glow);
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.avatar-lg {
+  width: 54px;
+  height: 54px;
+}
+
+/* Cycle avatar colours per card — same as before */
+.feed .post:nth-child(2) .avatar { background: linear-gradient(135deg, var(--blue), #7c5cbf); box-shadow: 0 2px 10px rgba(77,166,255,.35); }
+.feed .post:nth-child(3) .avatar { background: linear-gradient(135deg, var(--teal), #0096c7); box-shadow: 0 2px 10px rgba(0,201,167,.35);  }
+.feed .post:nth-child(4) .avatar { background: linear-gradient(135deg, var(--amber), #e76f51);box-shadow: 0 2px 10px rgba(245,166,35,.35); }
+.feed .post:nth-child(5) .avatar { background: linear-gradient(135deg, #a8dadc, #457b9d);    box-shadow: 0 2px 10px rgba(168,218,220,.3); }
+.feed .post:nth-child(6) .avatar { background: linear-gradient(135deg, #c77dff, #e0aaff);    box-shadow: 0 2px 10px rgba(199,125,255,.3); }
+
+.post:hover .avatar {
+  transform: scale(1.12) rotate(-4deg);
+  box-shadow: 0 4px 20px var(--red-glow);
+}
+
+.avatar-initials {
+  font-family: var(--font-d);
+  font-weight: 900;
+  font-style: italic;
+  font-size: .95rem;
+  color: #fff;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ── POST HEADER (show / edit pages) ───────────────────────────── */
 .post-header {
   margin-bottom: 1rem;
   padding-bottom: .85rem;
   border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
 }
 
 /* ── META INFO ─────────────────────────────────────────────────── */
@@ -248,39 +288,13 @@ h1::after {
 /* ── USERNAME ──────────────────────────────────────────────────── */
 .user {
   font-family: var(--font-d);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   font-style: italic;
   color: var(--cream);
   letter-spacing: -.02em;
   margin-bottom: .55rem;
-  display: flex;
-  align-items: center;
-  gap: .6rem;
 }
-
-/* Avatar dot */
-.user::before {
-  content: '';
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, var(--red), var(--amber));
-  box-shadow: 0 2px 10px var(--red-glow);
-  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
-}
-
-.post:hover .user::before {
-  transform: scale(1.15) rotate(-5deg);
-  box-shadow: 0 4px 20px var(--red-glow);
-}
-
-/* Cycle avatar gradient per-card */
-.feed .post:nth-child(2) .user::before { background: linear-gradient(135deg, var(--blue), #7c5cbf); box-shadow: 0 2px 10px rgba(77,166,255,.35); }
-.feed .post:nth-child(3) .user::before { background: linear-gradient(135deg, var(--teal), #0096c7); box-shadow: 0 2px 10px rgba(0,201,167,.35);  }
-.feed .post:nth-child(4) .user::before { background: linear-gradient(135deg, var(--amber), #e76f51);box-shadow: 0 2px 10px rgba(245,166,35,.35); }
-.feed .post:nth-child(5) .user::before { background: linear-gradient(135deg, #a8dadc, #457b9d);    box-shadow: 0 2px 10px rgba(168,218,220,.3); }
-.feed .post:nth-child(6) .user::before { background: linear-gradient(135deg, #c77dff, #e0aaff);    box-shadow: 0 2px 10px rgba(199,125,255,.3); }
 
 /* ── CONTENT ───────────────────────────────────────────────────── */
 .content {
@@ -300,6 +314,132 @@ h1::after {
   border-top: 1px solid var(--border);
   padding-top: .95rem;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   AVATAR PICKER  (new.ejs + edit.ejs)
+   ══════════════════════════════════════════════════════════════ */
+.avatar-picker-section {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--ink-2);
+  border: 1.5px dashed var(--border-hi);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.6rem;
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+}
+
+.avatar-picker-section:hover {
+  border-color: var(--red);
+  background: rgba(232,52,74,.03);
+}
+
+/* The big clickable preview circle */
+.avatar-picker-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--red), var(--amber));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 18px var(--red-glow);
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  border: 2.5px solid transparent;
+}
+
+.avatar-picker-preview:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 26px var(--red-glow);
+}
+
+/* Camera overlay icon on hover */
+.avatar-picker-preview::after {
+  content: '📷';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: rgba(8,8,16,.65);
+  opacity: 0;
+  transition: opacity var(--t) var(--ease);
+  border-radius: 50%;
+}
+
+.avatar-picker-preview:hover::after { opacity: 1; }
+
+.avatar-picker-preview .avatar-initials {
+  font-family: var(--font-d);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: #fff;
+  line-height: 1;
+}
+
+/* Info column beside the preview */
+.avatar-picker-info {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+}
+
+.avatar-picker-info .meta-info {
+  margin-bottom: 0;
+}
+
+/* Small outline button for the file label */
+.btn-outline-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-family: var(--font-b);
+  font-size: .73rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: .42rem 1rem;
+  border-radius: 99px;
+  border: 1px solid var(--border-hi);
+  color: var(--cream);
+  background: var(--ink-3);
+  cursor: pointer;
+  transition: all var(--t) var(--ease);
+  white-space: nowrap;
+}
+
+.btn-outline-sm:hover {
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 3px 14px var(--red-glow);
+}
+
+/* Ghost remove button */
+.btn-ghost-sm {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-b);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .3rem .65rem;
+  border-radius: 99px;
+  border: none;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--t) var(--ease);
+}
+
+.btn-ghost-sm:hover { color: var(--red); }
 
 /* ── BUTTONS — base ────────────────────────────────────────────── */
 .btn {
@@ -327,7 +467,6 @@ h1::after {
     box-shadow    var(--t) var(--ease);
 }
 
-/* Click ripple */
 .btn::after {
   content: '';
   position: absolute; inset: 0;
@@ -339,7 +478,6 @@ h1::after {
 .btn:active { transform: scale(.95) !important; }
 .btn:active::after { opacity: 1; }
 
-/* See details */
 .btn-detail {
   background: var(--ink-3);
   color: var(--ghost);
@@ -352,7 +490,6 @@ h1::after {
   transform: translateY(-2px);
 }
 
-/* Edit */
 .btn-edit {
   background: var(--blue-dim);
   color: var(--blue);
@@ -366,7 +503,6 @@ h1::after {
   box-shadow: 0 4px 18px rgba(77,166,255,.35);
 }
 
-/* Delete */
 .btn-delete {
   background: var(--red-dim);
   color: var(--red);
@@ -380,7 +516,6 @@ h1::after {
   box-shadow: 0 4px 18px var(--red-glow);
 }
 
-/* Save / Publish — primary CTA */
 .btn-save {
   background: var(--red);
   color: #fff;
@@ -392,7 +527,6 @@ h1::after {
   box-shadow: 0 6px 24px var(--red-glow), 0 0 0 4px rgba(232,52,74,.12);
 }
 
-/* Cancel / Back */
 .btn-cancel {
   background: transparent;
   color: var(--muted);
@@ -405,7 +539,6 @@ h1::after {
   transform: translateY(-1px);
 }
 
-/* Create (big pill at bottom of feed) */
 .btn-create {
   background: linear-gradient(135deg, var(--red) 0%, #c0272d 100%);
   color: #fff;
@@ -417,7 +550,6 @@ h1::after {
   position: relative;
 }
 
-/* Pulsing glow ring on create */
 .btn-create::before {
   content: '';
   position: absolute; inset: -4px;
@@ -438,7 +570,7 @@ h1::after {
   box-shadow: 0 12px 38px var(--red-glow), 0 2px 0 rgba(255,255,255,.1) inset;
 }
 
-/* ── DELETE FORM (inline) ──────────────────────────────────────── */
+/* ── DELETE FORM ───────────────────────────────────────────────── */
 .delete-form { margin: 0; }
 
 /* ── CREATE POST CONTAINER ─────────────────────────────────────── */
@@ -449,14 +581,13 @@ h1::after {
   animation: fadeUp .7s .25s var(--ease) both;
 }
 
-/* ── FORM CARD (new.ejs + edit.ejs) ────────────────────────────── */
+/* ── FORM CARD ─────────────────────────────────────────────────── */
 .form-card {
   animation: fadeUp .5s var(--ease) both;
   position: relative;
   overflow: hidden;
 }
 
-/* Animated colour bar at top of form card */
 .form-card::before {
   content: '';
   position: absolute;
@@ -480,9 +611,7 @@ h1::after {
   transition: color var(--t);
 }
 
-.form-group:focus-within label.meta-info {
-  color: var(--red);
-}
+.form-group:focus-within label.meta-info { color: var(--red); }
 
 /* ── INPUTS ────────────────────────────────────────────────────── */
 .edit-input,
@@ -525,4 +654,6 @@ h1::after {
   .post-actions { gap: .4rem; }
   .btn { padding: .44rem .88rem; font-size: .7rem; }
   .btn-create { padding: .75rem 1.6rem; }
+  .avatar-picker-section { flex-direction: column; align-items: flex-start; }
+  .avatar-picker-preview { width: 60px; height: 60px; }
 }

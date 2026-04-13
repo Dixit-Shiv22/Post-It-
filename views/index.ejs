@@ -13,7 +13,15 @@
         <div class="feed">
             <% for (let post of posts){ %>
                 <div class="post">
-                    <h3 class="user">@<%= post.username %></h3>
+                    <div class="post-top">
+                        <div class="avatar-wrap">
+                            <div class="avatar" id="av-<%= post.id %>" data-username="<%= post.username %>">
+                                <span class="avatar-initials"><%= post.username.charAt(0).toUpperCase() %></span>
+                            </div>
+                        </div>
+                        <h3 class="user">@<%= post.username %></h3>
+                    </div>
+
                     <p class="content"><%= post.content %></p>
                     
                     <div class="post-actions">
@@ -32,5 +40,19 @@
             <a class="btn btn-create" href="/posts/new">+ Create a new post</a>
         </div>
     </div>
+
+    <script>
+        // Hydrate all avatars from localStorage on page load
+        document.querySelectorAll('.avatar[data-username]').forEach(el => {
+            const key = 'pfp:' + el.dataset.username;
+            const img = localStorage.getItem(key);
+            if (img) {
+                el.style.backgroundImage = `url(${img})`;
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition = 'center';
+                el.querySelector('.avatar-initials').style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

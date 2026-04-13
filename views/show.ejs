@@ -12,8 +12,15 @@
 
         <div class="post">
             <div class="post-header">
-                <p class="meta-info">Post ID: <%= post.id %></p>
-                <h3 class="user">@<%= post.username %></h3>
+                <div class="post-top">
+                    <div class="avatar avatar-lg" id="show-avatar" data-username="<%= post.username %>">
+                        <span class="avatar-initials"><%= post.username.charAt(0).toUpperCase() %></span>
+                    </div>
+                    <div>
+                        <p class="meta-info">Post ID: <%= post.id %></p>
+                        <h3 class="user">@<%= post.username %></h3>
+                    </div>
+                </div>
             </div>
             
             <p class="content"><%= post.content %></p>
@@ -24,5 +31,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const el = document.getElementById('show-avatar');
+        const img = localStorage.getItem('pfp:' + el.dataset.username);
+        if (img) {
+            el.style.backgroundImage = `url(${img})`;
+            el.style.backgroundSize = 'cover';
+            el.style.backgroundPosition = 'center';
+            el.querySelector('.avatar-initials').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

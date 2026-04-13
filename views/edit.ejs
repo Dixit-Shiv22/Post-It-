@@ -12,11 +12,25 @@
 
         <div class="post form-card">
             <div class="post-header">
-                <p class="meta-info">Post ID: <%= post.id %></p>
+
+                <!-- Avatar picker — pre-loads existing image from localStorage -->
+                <div class="avatar-picker-section">
+                    <div class="avatar-picker-preview" id="picker-preview">
+                        <span class="avatar-initials"><%= post.username.charAt(0).toUpperCase() %></span>
+                    </div>
+                    <div class="avatar-picker-info">
+                        <span class="meta-info">Profile Picture</span>
+                        <label for="pfp-upload" class="btn btn-outline-sm">Change Photo</label>
+                        <input type="file" id="pfp-upload" accept="image/*" style="display:none;">
+                        <button type="button" class="btn btn-ghost-sm" id="remove-pfp" style="display:none;">Remove</button>
+                    </div>
+                </div>
+
+                <p class="meta-info" style="margin-top:.75rem;">Post ID: <%= post.id %></p>
                 <h3 class="user">@<%= post.username %></h3>
             </div>
             
-            <form action="/posts/<%= post.id %>?_method=PATCH" method="POST">
+            <form action="/posts/<%= post.id %>?_method=PATCH" method="POST" id="edit-form">
                 <div class="form-group">
                     <textarea class="edit-textarea" rows="8" name="content" required><%= post.content %></textarea>
                 </div>
@@ -28,5 +42,64 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const USERNAME    = '<%= post.username %>';
+        const fileInput   = document.getElementById('pfp-upload');
+        const preview     = document.getElementById('picker-preview');
+        const initial     = preview.querySelector('.avatar-initials');
+        const removeBtn   = document.getElementById('remove-pfp');
+
+        let pendingImage  = null;
+
+        // Pre-load existing avatar
+        const stored = localStorage.getItem('pfp:' + USERNAME);
+        if (stored) {
+            applyPreview(stored);
+            pendingImage = stored;
+            removeBtn.style.display = 'inline-flex';
+        }
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                pendingImage = e.target.result;
+                applyPreview(pendingImage);
+                removeBtn.style.display = 'inline-flex';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        removeBtn.addEventListener('click', () => {
+            pendingImage = null;
+            localStorage.removeItem('pfp:' + USERNAME);
+            clearPreview();
+            removeBtn.style.display = 'none';
+            fileInput.value = '';
+        });
+
+        function applyPreview(src) {
+            preview.style.backgroundImage = `url(${src})`;
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
+            initial.style.display = 'none';
+        }
+
+        function clearPreview() {
+            preview.style.backgroundImage = '';
+            initial.style.display = '';
+        }
+
+        // On submit: persist updated image
+        document.getElementById('edit-form').addEventListener('submit', () => {
+            if (pendingImage) {
+                localStorage.setItem('pfp:' + USERNAME, pendingImage);
+            } else {
+                localStorage.removeItem('pfp:' + USERNAME);
+            }
+        });
+    </script>
 </body>
 </html>
